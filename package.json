@@ -1,0 +1,25 @@
+{
+  "name": "teeworlds-server-status",
+  "version": "0.0.1",
+  "description": "Teeworlds server information the easy way.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ryozuki/teeworlds-server-status.git"
+  },
+  "keywords": [
+    "teeworlds",
+    "info",
+    "server",
+    "status"
+  ],
+  "author": "Ryozuki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ryozuki/teeworlds-server-status/issues"
+  },
+  "homepage": "https://github.com/Ryozuki/teeworlds-server-status#readme"
+}
