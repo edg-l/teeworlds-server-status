@@ -53,14 +53,19 @@ class ServerInfo {
   }
 
   startSending (cb = () => {}) {
-    dns.resolve4(this.ip, (err, ips) => {
-      if (err) throw err
-
-      this.ip = ips[0]
-
+    if (/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/g.test(this.ip)) {
       this.client.bind()
       cb.call()
-    })
+    } else {
+      dns.resolve4(this.ip, (err, ips) => {
+        if (err) throw err
+  
+        this.ip = ips[0]
+  
+        this.client.bind()
+        cb.call()
+      })
+    }
   }
 
   on (event, cb) {
