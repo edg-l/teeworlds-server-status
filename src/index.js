@@ -165,7 +165,7 @@ class ServerInfo {
       this.playerCount = parseInt(slots.shift())
       this.maxPlayerCount = parseInt(slots.shift())
       this.clientCount = parseInt(slots.shift())
-      this.maxClientcount = parseInt(slots.shift())
+      this.maxClientCount = parseInt(slots.shift())
 
       debug(`Version is: ${this.version}`)
       debug(`Name is: ${this.name}`)
@@ -174,7 +174,7 @@ class ServerInfo {
       debug(`numplayers is: ${this.playerCount}`)
       debug(`maxplayers is: ${this.maxPlayerCount}`)
       debug(`numclients is: ${this.clientCount}`)
-      debug(`maxclients is: ${this.maxClientcount}`)
+      debug(`maxclients is: ${this.maxClientCount}`)
     }
 
     if (initClients) {
