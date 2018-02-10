@@ -30,7 +30,7 @@ class ServerInfo {
       if (rinfo.address === this.ip && rinfo.port === this.port) {
         this.waitingResponse = false
         this.parsePacket(packet)
-        this.onInfo.forEach(cb => cb())
+        this.onInfo.forEach(cb => cb(this))
       }
     })
 
@@ -39,11 +39,17 @@ class ServerInfo {
       debug(`Client listening on ${address.address}:${address.port}`)
 
       // maybe add a timeout with the frequency and make a event callback
-      setInterval(() => {
-        this.sendRequest()
-      }, this.fetchInterval)
+      if (this.fetchInterval !== 0) {
+        setInterval(() => {
+          this.sendRequest()
+        }, this.fetchInterval)
+      }
       this.sendRequest()
     })
+  }
+
+  closeSocket () {
+    this.client.close()
   }
 
   startSending (cb = () => {}) {
@@ -52,7 +58,7 @@ class ServerInfo {
 
       this.ip = ips[0]
 
-      this.client.bind(43032)
+      this.client.bind()
       cb.call()
     })
   }
@@ -274,4 +280,17 @@ class ServerInfo {
   }
 }
 
-module.exports = exports = ServerInfo
+function getServerInfo (ip, port, cb) {
+  let server = new ServerInfo(ip, port, 0)
+  server.on('info', (sv) => {
+    sv.closeSocket()
+    cb(sv)
+  })
+  server.startSending(() => {
+  })
+}
+
+module.exports = exports = {
+  ServerInfo: ServerInfo,
+  getServerInfo: getServerInfo
+}
