@@ -4,39 +4,67 @@ const crypto = require('crypto')
 const dns = require('dns')
 
 class ServerInfo {
-  constructor (ip, port, fetchInterval, ignoreToken = true) {
+  /**
+   * The ServerInfo constructor.
+   * @param {String} ip The address of the server.
+   * @param {Number} port The port of the server.
+   * @param {Number} fetchInterval The delay in ms between info requests.
+   * @param {Boolean} ignoreToken Whether to ignore the token of the server.
+   */
+  constructor (ip, port, fetchInterval = 30000, ignoreToken = true) {
     this.port = port
+    this.ip = ip
     this.fetchInterval = fetchInterval
     this.client = dgram.createSocket('udp4')
     this.ignoreToken = ignoreToken
+    this.onInfo = []
+    this.waitingResponse = false
 
-    dns.resolve4(ip, (err, ips) => {
-      if (err) debug(err)
+    this.client.on('error', (err) => {
+      if (err) throw err
+      this.client.close()
+    })
+
+    this.client.on('message', (packet, rinfo) => {
+      debug(`client got message: ${packet} from ${rinfo.address}:${rinfo.port}`)
+      if (rinfo.address === this.ip && rinfo.port === this.port) {
+        this.waitingResponse = false
+        this.parsePacket(packet)
+        this.onInfo.forEach(cb => cb())
+      }
+    })
+
+    this.client.on('listening', () => {
+      const address = this.client.address()
+      debug(`Client listening on ${address.address}:${address.port}`)
+
+      // maybe add a timeout with the frequency and make a event callback
+      setInterval(() => {
+        this.sendRequest()
+      }, this.fetchInterval)
+      this.sendRequest()
+    })
+  }
+
+  startSending (cb = () => {}) {
+    dns.resolve4(this.ip, (err, ips) => {
+      if (err) throw err
 
       this.ip = ips[0]
 
-      this.client.on('error', (err) => {
-        debug(err)
-        this.client.close()
-      })
-
-      this.client.on('message', (packet, rinfo) => {
-        debug(`client got message: ${packet} from ${rinfo.address}:${rinfo.port}`)
-        if (rinfo.address === this.ip && rinfo.port === this.port) {
-          this.parsePacket(packet)
-        }
-      })
-
-      this.client.on('listening', () => {
-        const address = this.client.address()
-        debug(`Client listening on ${address.address}:${address.port}`)
-
-        // maybe add a timeout with the frequency and make a event callback
-        this.sendRequest()
-      })
-
       this.client.bind(43032)
+      cb.call()
     })
+  }
+
+  on (event, cb) {
+    switch (event) {
+      case 'info':
+      {
+        this.onInfo.push(cb)
+        break
+      }
+    }
   }
 
   sendRequest () {
@@ -57,6 +85,7 @@ class ServerInfo {
       if (err) throw err
     })
     debug(`Sent info request to ${this.ip}:${this.port}`)
+    this.waitingResponse = true
   }
 
   sendPacket (buffer, cb) {
@@ -208,7 +237,6 @@ class ServerInfo {
 
       clientnum++
     }
-
     debug(this.clients)
   }
 
@@ -246,4 +274,4 @@ class ServerInfo {
   }
 }
 
-var test = new ServerInfo('localhost', 8303, 1000)
+module.exports = exports = ServerInfo
