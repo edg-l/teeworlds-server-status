@@ -11,7 +11,7 @@ class ServerInfo {
    * @param {Number} fetchInterval The delay in ms between info requests.
    * @param {Boolean} ignoreToken Whether to ignore the token of the server.
    */
-  constructor (ip, port, fetchInterval = 30000, ignoreToken = true) {
+  constructor(ip, port, fetchInterval = 30000, ignoreToken = true) {
     this.port = port
     this.ip = ip
     this.fetchInterval = fetchInterval
@@ -48,37 +48,40 @@ class ServerInfo {
     })
   }
 
-  closeSocket () {
+  closeSocket() {
     this.client.close()
   }
 
-  startSending (cb = () => {}) {
-    if (/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/g.test(this.ip)) {
-      this.client.bind()
-      cb.call()
-    } else {
-      dns.resolve4(this.ip, (err, ips) => {
-        if (err) throw err
-  
-        this.ip = ips[0]
-  
+  startSending() {
+    return new Promise((resolve, reject) => {
+      if (/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/g.test(this.ip)) {
         this.client.bind()
-        cb.call()
-      })
-    }
+        resolve();
+      } else {
+        dns.resolve4(this.ip, (err, ips) => {
+          if (err) reject(err)
+
+          this.ip = ips[0]
+
+          this.client.bind()
+          resolve();
+        })
+      }
+    })
+
   }
 
-  on (event, cb) {
+  on(event, cb) {
     switch (event) {
       case 'info':
-      {
-        this.onInfo.push(cb)
-        break
-      }
+        {
+          this.onInfo.push(cb)
+          break
+        }
     }
   }
 
-  sendRequest () {
+  sendRequest() {
     const buffer = Buffer.alloc(15)
     buffer.write('xe', 0, 2)
     crypto.randomFillSync(buffer, 2, 2)
@@ -99,7 +102,7 @@ class ServerInfo {
     this.waitingResponse = true
   }
 
-  sendPacket (buffer, cb) {
+  sendPacket(buffer, cb) {
     this.client.send(buffer, this.port, this.ip, cb)
   }
 
@@ -107,7 +110,7 @@ class ServerInfo {
    * Parses the packet and fills with info
    * @param {Buffer} buffer The received packet
    */
-  parsePacket (buffer) {
+  parsePacket(buffer) {
     this.buffer = buffer
     var type = buffer.subarray(10, 14).toString()
     let initClients = false
@@ -251,7 +254,7 @@ class ServerInfo {
     debug(this.clients)
   }
 
-  unPackInt (slots) {
+  unPackInt(slots) {
     let src = slots[0]
     debug('src is {0}', src)
     if (src === '') {
@@ -285,14 +288,15 @@ class ServerInfo {
   }
 }
 
-function getServerInfo (ip, port, cb) {
-  let server = new ServerInfo(ip, port, 0)
-  server.on('info', (sv) => {
-    sv.closeSocket()
-    cb(sv)
-  })
-  server.startSending(() => {
-  })
+function getServerInfo(ip, port, cb) {
+  return new Promise(async (resolve, reject) => {
+    let server = new ServerInfo(ip, port, 0);
+    server.on('info', (sv) => {
+      sv.closeSocket();
+      resolve(sv);
+    })
+    await server.startSending();
+  });
 }
 
 module.exports = exports = {
