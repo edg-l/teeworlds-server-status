@@ -1,10 +1,11 @@
 {
   "name": "teeworlds-server-status",
-  "version": "1.0.2",
+  "version": "2.0",
   "description": "Teeworlds server information.",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "node test.js"
+    "test": "ts-node src/tests/test.ts",
+    "postinstall": "tsc"
   },
   "repository": {
     "type": "git",
@@ -22,14 +23,10 @@
     "url": "https://github.com/Ryozuki/teeworlds-server-status/issues"
   },
   "homepage": "https://github.com/Ryozuki/teeworlds-server-status#readme",
-  "dependencies": {
-    "debug": "^3.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "eslint-config-standard": "^11.0.0-beta.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^6.0.0",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "@types/node": "^10.7.1",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.1"
   }
 }
