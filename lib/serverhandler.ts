@@ -15,7 +15,7 @@ export class ServerHandler {
   }
 
   public requestInfo(): Promise<IServerInfo | null> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const socket = dgram.createSocket("udp4");
 
       socket.on("error", err => {
