@@ -1,8 +1,9 @@
 {
   "name": "teeworlds-server-status",
-  "version": "2.0",
+  "version": "2.1.0",
   "description": "Teeworlds server information.",
-  "main": "src/index.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "test": "ts-node src/tests/test.ts",
     "postinstall": "tsc"
@@ -23,8 +24,7 @@
     "url": "https://github.com/Ryozuki/teeworlds-server-status/issues"
   },
   "homepage": "https://github.com/Ryozuki/teeworlds-server-status#readme",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "@types/node": "^10.7.1",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.1"
