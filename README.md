@@ -1,21 +1,27 @@
 # teeworlds-server-status
-```js
-var ServerInfo = require('teeworlds-server-status').ServerInfo
 
-var server1 = new ServerInfo('ger.ddnet.tw', 8303, 5000)
+Typescript:
+```ts
+import { ServerHandler } from "teeworlds-server-status";
 
-server1.on('info', () => {
-  console.log(server1)
-})
+const server = new ServerHandler("0.0.0.0", 8303, false);
 
-server1.startSending(() => console.log('Ready!'))
-
+server.requestInfo().then(data => {
+  // tslint:disable-next-line:no-console
+  console.log(data);
+});
 ```
 
-```js
-var getServerInfo = require('teeworlds-server-status').getServerInfo
+Javascript:
 
-getServerInfo('ger.ddnet.tw', 8303, (sv) => {
-  console.log(sv)
-})
+```js
+const tw = require("teeworlds-server-status");
+
+const server = new tw.ServerHandler("95.172.92.151", 8303, false);
+
+server.requestInfo().then(data => {
+  // tslint:disable-next-line:no-console
+  console.log(data);
+});
+
 ```
