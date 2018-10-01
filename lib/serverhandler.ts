@@ -7,11 +7,14 @@ export class ServerHandler {
   public address: string;
   public port: number = 8303;
   public ignoreToken: boolean;
+  public timeout: number;
 
-  constructor(address: string, port: number = 8303, ignoreToken: boolean = true) {
+  constructor(address: string, port: number = 8303, ignoreToken: boolean = true,
+              timeout: number = 100) {
     this.address = address;
     this.port = port;
     this.ignoreToken = ignoreToken;
+    this.timeout = timeout;
   }
 
   public requestInfo(): Promise<IServerInfo | null> {
@@ -24,18 +27,29 @@ export class ServerHandler {
 
       let token: number;
       let extraToken: number;
+      let timeoutID: NodeJS.Timer;
 
       socket.on("listening", async () => {
         const res = await this.sendRequest(socket);
         token = res.token;
         extraToken = res.extraToken;
+
+        timeoutID = setTimeout(() => {
+          socket.close();
+          reject(Error(`Timed out after ${this.timeout} milliseconds.`));
+        }, this.timeout);
       });
 
       socket.on("message", (msg, rinfo) => {
         if (rinfo.address === this.address && rinfo.port === this.port) {
+          clearTimeout(timeoutID);
           socket.close();
-          const serverInfo = this.parsePacket(msg, token, extraToken);
-          resolve(serverInfo);
+          try {
+            const serverInfo = this.parsePacket(msg, token, extraToken);
+            resolve(serverInfo);
+          } catch (err) {
+            reject(err);
+          }
         }
       });
       socket.bind();
