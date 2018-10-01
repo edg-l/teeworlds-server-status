@@ -8,7 +8,7 @@ export class ServerHandler {
   public port: number = 8303;
   public ignoreToken: boolean;
 
-  constructor(address: string, port: number = 8303, ignoreToken: boolean = true) {
+  constructor(address: string, port: number = 8303, ignoreToken: boolean = false) {
     this.address = address;
     this.port = port;
     this.ignoreToken = ignoreToken;
@@ -54,8 +54,8 @@ export class ServerHandler {
       buffer.fill(0xff, 6, 10);
       buffer.write("gie3", 10, 4);
       crypto.randomFillSync(buffer, 14, 1);
-      const extraToken = buffer.readIntBE(2, 2);
-      const token = buffer.readIntBE(14, 1);
+      const extraToken = buffer.readUIntBE(2, 2);
+      const token = buffer.readUIntBE(14, 1);
 
       socket.send(buffer, this.port, this.address, (err, bytes) => {
         if (err) reject(err);
@@ -82,7 +82,7 @@ export class ServerHandler {
       stype = "ext";
     }
 
-    if (type !== "ext") {
+    if (!stype) {
       stype = type;
     }
 
