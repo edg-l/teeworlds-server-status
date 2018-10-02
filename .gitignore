@@ -2,9 +2,9 @@
 
 dist/
 
-lib/*.js
-lib/*.map
-lib/*.d.ts
+lib/**/*.js
+lib/**/*.map
+lib/**/*.d.ts
 
 logs
 *.log
