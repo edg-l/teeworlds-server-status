@@ -36,7 +36,7 @@ export class ServerHandler {
 
         timeoutID = setTimeout(() => {
           socket.close();
-          reject(Error(`Timed out after ${this.timeout} milliseconds.`));
+          reject(new Error(`Timed out after ${this.timeout} milliseconds.`));
         }, this.timeout);
       });
 
