@@ -2,6 +2,10 @@
 
 dist/
 
+lib/*.js
+lib/*.map
+lib/*.d.ts
+
 logs
 *.log
 npm-debug.log*
