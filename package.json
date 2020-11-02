@@ -1,6 +1,6 @@
 {
   "name": "teeworlds-server-status",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Teeworlds server information.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ryozuki/teeworlds-server-status.git"
+    "url": "git+https://github.com/edg-l/teeworlds-server-status.git"
   },
   "keywords": [
     "teeworlds",
@@ -25,9 +25,9 @@
   "license": "MIT",
   "files": ["lib/**/*"],
   "bugs": {
-    "url": "https://github.com/Ryozuki/teeworlds-server-status/issues"
+    "url": "https://github.com/edg-l/teeworlds-server-status/issues"
   },
-  "homepage": "https://github.com/Ryozuki/teeworlds-server-status#readme",
+  "homepage": "https://github.com/edg-l/teeworlds-server-status#readme",
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^14.14.6",
