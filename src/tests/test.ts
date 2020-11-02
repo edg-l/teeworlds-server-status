@@ -1,6 +1,6 @@
 import { ServerHandler } from '../index';
 
-const server = new ServerHandler('95.172.92.151', 8303, false);
+const server = new ServerHandler('165.227.139.80', 8298, false);
 
 server.requestInfo().then((data) => {
     // tslint:disable-next-line:no-console
