@@ -2,12 +2,13 @@
   "name": "teeworlds-server-status",
   "version": "2.2.1",
   "description": "Teeworlds server information.",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts-node src/tests/test.ts",
     "build": "tsc",
-    "lint": "eslint '*/**/*.ts' --quiet --fix"
+    "lint": "eslint '*/**/*.ts' --quiet --fix",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -15,11 +16,12 @@
   },
   "keywords": [
     "teeworlds",
+    "ddracenetwork",
     "info",
     "server",
     "status"
   ],
-  "author": "Ryozuki",
+  "author": "Edgar Luque",
   "license": "MIT",
   "files": ["lib/**/*"],
   "bugs": {
